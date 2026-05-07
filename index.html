@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css\all.min.css">
+    <link rel="stylesheet" href="css\bootstrap.min.css">
+    <link rel="icon" href="img/auracast_favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/auracast_favicon_32.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="img/auracast_favicon_192.png">
+    <title>AuraCast — Weather Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/stylesheet.css">
+
+</head>
+<body>
+    <!-- Loading -->
+<div class="loading-overlay d-none" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">Loading data</div>
+</div>
+
+<!-- Backgrounds -->
+<div class="bg-layer active" id="bg-night"></div>
+<div class="bg-layer" id="bg-sunny"></div>
+<div class="bg-layer" id="bg-afternoon"></div>
+<div class="bg-layer" id="bg-rain"></div>
+<div class="bg-layer" id="bg-winter"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fa-regular fa-circle-xmark"></i> <span id="toast-msg">No matching location found.</span></div>
+
+<div class="app">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo"><img src="img/auracast_favicon_192.png"class="w-100" alt="AuraCast" ></div>
+    <a class="nav-item active" href="#dashboard" title="Dashboard"><i class="fa-solid fa-house"></i></a>
+    <a class="nav-item" href="#hourly-section" title="Hourly"><i class="fa-solid fa-clock"></i></a>
+    <a class="nav-item" href="#forecast" title="Forecast"><i class="fa-solid fa-calendar-days"></i></a>
+    <a class="nav-item" href="#aqi-section" title="Air Quality"><i class="fa-solid fa-leaf"></i></a>
+    <a class="nav-item" href="#contact-section" title="Contact"><i class="fa-solid fa-envelope"></i></a>
+    <a class="nav-item" id="mode" title="Dark / Light"onclick="mode()"><i class="fa-solid fa-moon"></i></a>
+  </nav>
+
+  <!-- Main -->
+  <main class="main" id="dashboard">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input class="search-input" type="text" id="cityInput" placeholder="Search city…" />
+        <button class="search-btn" onclick="searchCity()"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+      <div class="topbar-right">
+        <div class="unit-toggle">
+          <button class="unit-btn active" id="btnC" onclick="setUnit('C')">°C</button>
+          <button class="unit-btn" id="btnF" onclick="setUnit('F')">°F</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-msg" id="errorMsg"><i class="fa-solid fa-triangle-exclamation"></i> <span id="errorText">City not found.</span></div>
+
+    <!-- Hero Grid -->
+    <div class="hero-grid">
+      <!-- Hero Card -->
+      <div class="hero-card">
+        <div class="weather-icon-big" id="heroIconBig"><i class="fa-solid fa-sun"></i></div>
+        <div class="hero-location">
+          <i class="fa-solid fa-location-dot"></i>
+          <span id="heroLocation">0</span>
+          <span style="opacity:0.4">·</span>
+          <span id="heroDate" style="color:var(--muted)">0</span>
+        </div>
+        <div class="hero-temp" id="heroTemp">0°</div>
+        <div class="hero-condition" id="heroCondition">0</div>
+        <div class="hero-feels" id="heroFeels">Feels like 0°</div>
+        <div class="hero-meta">
+          <div class="meta-item"><i class="fa-solid fa-droplet"></i> Humidity <span id="metaHumidity">0</span></div>
+          <div class="meta-item"><i class="fa-solid fa-wind"></i> Wind <span id="metaWind">0</span></div>
+          <div class="meta-item"><i class="fa-solid fa-eye"></i> Visibility <span id="metaVis">0</span></div>
+          <div class="meta-item"><i class="fa-solid fa-gauge-high"></i> Pressure <span id="metaPressure">0</span></div>
+        </div>
+      </div>
+
+      <!-- Side Cards -->
+      <div class="side-cards">
+        <div class="mini-card">
+          <div class="mini-card-icon"><i class="fa-solid fa-sun"></i></div>
+          <div class="mini-card-info">
+            <div class="mini-card-label">Sunrise / Sunset</div>
+            <div class="mini-card-val" id="sideRise">0</div>
+            <div class="mini-card-sub" id="sideSet">0</div>
+          </div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-icon"><i class="fa-solid fa-cloud-rain"></i></div>
+          <div class="mini-card-info">
+            <div class="mini-card-label">Precipitation</div>
+            <div class="mini-card-val" id="sidePrecip">0</div>
+            <div class="mini-card-sub" id="sideCloud">Cloud cover 0</div>
+          </div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-icon"><i class="fa-solid fa-temperature-half"></i></div>
+          <div class="mini-card-info">
+            <div class="mini-card-label">High / Low Today</div>
+            <div class="mini-card-val" id="sideHL">0 / 0</div>
+            <div class="mini-card-sub" id="sideUV">UV Index 0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hourly Strip -->
+    <div id="hourly-section">
+      <div class="chart-section">
+        <div class="section-title"><i class="fa-solid fa-clock"></i> Hourly Forecast</div>
+        <div class="hourly-strip" id="hourlyStrip">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Bar Chart -->
+    <div id="forecast">
+      <div class="chart-section">
+        <div class="section-title"><i class="fa-solid fa-chart-column"></i> 7-Day Temperature</div>
+        <div class="bar-chart" id="barChart">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- AQI / Stats -->
+    <div id="aqi-section">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-card-label"><i class="fa-solid fa-leaf"></i> AQI</div>
+          <div class="stat-card-val" id="statAqi">0</div>
+          <div class="stat-bar"><div class="stat-bar-fill" id="statAqiBar" style="width:0%"></div></div>
+          <div class="stat-card-sub" id="statAqiLabel">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label"><i class="fa-solid fa-radiation"></i> UV Index</div>
+          <div class="stat-card-val" id="statUV">0</div>
+          <div class="stat-bar"><div class="stat-bar-fill" id="statUVBar" style="width:0%"></div></div>
+          <div class="stat-card-sub" id="statUVLabel">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label"><i class="fa-solid fa-smog"></i> PM2.5</div>
+          <div class="stat-card-val" id="statPM">0</div>
+          <div class="stat-bar"><div class="stat-bar-fill" id="statPMBar" style="width:0%"></div></div>
+          <div class="stat-card-sub">µg/m³</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label"><i class="fa-solid fa-moon"></i> Moon Phase</div>
+          <div class="stat-card-val" id="statMoon">0</div>
+          <div class="stat-bar"><div class="stat-bar-fill" id="statMoonBar" style="width:50%"></div></div>
+          <div class="stat-card-sub" id="statMoonLabel">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div id="contact-section">
+      <div class="contact-section">
+        <div class="section-title"><i class="fa-solid fa-paper-plane"></i> Contact Us</div>
+        <div class="contact-grid">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input class="form-input" type="text" placeholder="Salma" id="cf-fname"oninput="validate(firstNameInput, firstNameRegex, fNameAlert)">
+            <div class="alert alert-danger mt-1 d-none" id="fname-alert" role="alert">
+              Enter your first name
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input class="form-input" type="text" placeholder="Maher" id="cf-lname"oninput="validate(lastNameInput, lastNameRegex, lNameAlert)">
+            <div class="alert alert-danger mt-1 d-none" id="lname-alert" role="alert">
+              Enter your last name 
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" placeholder="salma@example.com" id="cf-email"oninput="validate(emailInput, emailRegex, emailAlert)">
+            <div class="alert alert-danger mt-1 d-none" id="email-alert" role="alert">
+              Enter your email
+           </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <input class="form-input" type="text" placeholder="Weather report issue" id="cf-subject"oninput="validate(subjectInput, subjectRegex, subjectAlert)">
+            <div class="alert alert-danger mt-1 d-none" id="sub-alert" role="alert">
+              Enter your message subject
+           </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" placeholder="Tell us something…" id="cf-msg"oninput="validate(messageInput, messageRegex, messageAlert)"></textarea>
+            <div class="alert alert-danger mt-1 d-none" id="mess-alert" role="alert">
+              Enter your message 
+        </div>
+          </div>
+          <div class="form-group full">
+            <button class="submit-btn w-100"id="btn-submit" onclick="submitMessage()">
+              <i class="fa-solid fa-paper-plane"></i> Send Message
+            </button>
+            <button class="submit-btn  w-100" id="btn-cancel" onclick="cancelation()">
+              <i class="fa-solid fa-ban"></i> cancel Message
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+    <script src="js\bootstrap.bundle.min.js"></script>
+    <script src="js\all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
