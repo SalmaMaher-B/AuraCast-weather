@@ -423,28 +423,21 @@ function setBackground(code, isDay, localHour) {
 }
 
 function renderBar(forecastDays) {
-  if (!chart) return; // تأكدي إن العنصر موجود في الـ HTML
+  if (!chart) return;
   chart.innerHTML = '';
-
-  // حساب أعلى وأقل درجة حرارة عشان نضبط نسب الأطوال (Scaling)
-  const maxTemp = Math.max(...forecastDays.map(d => d.day.maxtemp_c));
-  const minTemp = Math.min(...forecastDays.map(d => d.day.mintemp_c));
-  const range = (maxTemp - minTemp) || 1;
-
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
+  var maxTemp = Math.max(...forecastDays.map(d => d.day.maxtemp_c));
+  var minTemp = Math.min(...forecastDays.map(d => d.day.mintemp_c));
+  var range = (maxTemp - minTemp) || 1;
+  var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   forecastDays.forEach((d, i) => {
-    const date = new Date(d.date);
-    const dayName = days[date.getDay()];
-    const isToday = i === 0;
+    var date = new Date(d.date);
+    var dayName = days[date.getDay()];
+    var isToday = i === 0;
+    var heightPct = ((d.day.maxtemp_c - minTemp) / range) * 60 + 25;
 
-    // حساب الطول بالنسبة المئوية (مع حد أدنى 25% عشان الشكل)
-    const heightPct = ((d.day.maxtemp_c - minTemp) / range) * 60 + 25;
-
-    const col = document.createElement('div');
+    var col = document.createElement('div');
     col.className = 'bar-col';
     
-    // استخدمنا tempDisp اللي إنتِ معرفاها عشان تحترم الـ Unit (C/F)
     col.innerHTML = `
       <div class="bar-temp-top">${tempDisp(d.day.maxtemp_c)}</div>
       <div class="bar-wrap">
@@ -465,9 +458,7 @@ function renderStats() {
     if (!currentData || !dataList.forecast) return;
 
     const today = dataList.forecast.forecastday[0];
-    
-    // 1. جودة الهواء (AQI) - بنحسبها من us-epa-index
-    const aqi = currentData.air_quality ? (currentData.air_quality['us-epa-index'] || 1) : 1;
+        const aqi = currentData.air_quality ? (currentData.air_quality['us-epa-index'] || 1) : 1;
     const aqiLabels = ['Good', 'Moderate', 'Unhealthy for Sensitive', 'Unhealthy', 'Very Unhealthy', 'Hazardous'];
     
     if (document.getElementById('statAqi')) {
@@ -476,7 +467,6 @@ function renderStats() {
         document.getElementById('statAqiLabel').textContent = aqiLabels[aqi - 1] || '—';
     }
 
-    // 2. مؤشر الـ UV (بنأخذه من اليوم الحالي في الـ forecast)
     const uv = today.day.uv;
     const uvLabel = uv <= 2 ? 'Low' : uv <= 5 ? 'Moderate' : uv <= 7 ? 'High' : uv <= 10 ? 'Very High' : 'Extreme';
     
@@ -486,14 +476,12 @@ function renderStats() {
         document.getElementById('statUVLabel').textContent = uvLabel;
     }
 
-    // 3. نسبة الـ PM2.5 (الغبار الناعم)
     const pm = currentData.air_quality ? Math.round(currentData.air_quality.pm2_5 || 0) : 0;
     if (document.getElementById('statPMBar')) {
         document.getElementById('statPM').textContent = pm;
         document.getElementById('statPMBar').style.width = Math.min((pm / 150) * 100, 100) + '%';
     }
 
-    // 4. حالة القمر (Moon Phase)
     if (document.getElementById('statMoon')) {
         const moon = today.astro;
         document.getElementById('statMoon').textContent = moon.moon_illumination + '%';
