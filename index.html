@@ -42,6 +42,9 @@
     <a class="nav-item" href="#aqi-section" title="Air Quality"><i class="fa-solid fa-leaf"></i></a>
     <a class="nav-item" href="#contact-section" title="Contact"><i class="fa-solid fa-envelope"></i></a>
     <a class="nav-item" id="mode" title="Dark / Light"onclick="mode()"><i class="fa-solid fa-moon"></i></a>
+    <button class="close-sidebar" id="closeSidebar">
+       <i class="fa-solid fa-xmark"></i>
+    </button>
   </nav>
 
   <!-- Main -->
@@ -50,6 +53,9 @@
     <!-- Topbar -->
     <div class="topbar">
       <div class="search-wrap">
+        <button class="menu-toggle" id="menuToggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
         <input class="search-input" type="text" id="cityInput" placeholder="Search city…" />
         <button class="search-btn" onclick="searchCity()"><i class="fa-solid fa-arrow-right"></i></button>

@@ -507,3 +507,22 @@ function showToast(message, isError = true) {
         toast.classList.remove('show');
     }, 5000);
 }
+
+var menuToggle = document.getElementById("menuToggle");
+var sidebar = document.querySelector(".sidebar");
+
+menuToggle.addEventListener("click", () => {
+  sidebar.classList.toggle("open");
+});
+
+var menuToggle = document.getElementById("menuToggle");
+var closeSidebar = document.getElementById("closeSidebar");
+var sidebar = document.querySelector(".sidebar");
+
+menuToggle.addEventListener("click", () => {
+  sidebar.classList.add("open");
+});
+
+closeSidebar.addEventListener("click", () => {
+  sidebar.classList.remove("open");
+});
