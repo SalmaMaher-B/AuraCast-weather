@@ -509,20 +509,19 @@ function showToast(message, isError = true) {
 }
 
 var menuToggle = document.getElementById("menuToggle");
-var sidebar = document.querySelector(".sidebar");
-
-menuToggle.addEventListener("click", () => {
-  sidebar.classList.toggle("open");
-});
-
-var menuToggle = document.getElementById("menuToggle");
 var closeSidebar = document.getElementById("closeSidebar");
 var sidebar = document.querySelector(".sidebar");
 
-menuToggle.addEventListener("click", () => {
-  sidebar.classList.add("open");
-});
+if (menuToggle && sidebar) {
+    menuToggle.addEventListener("click", () => {
+        sidebar.classList.add("open"); 
+        menuToggle.style.display = "none";
+    });
+}
 
-closeSidebar.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-});
+if (closeSidebar && sidebar) {
+    closeSidebar.addEventListener("click", () => {
+        sidebar.classList.remove("open");
+        menuToggle.style.display = "flex"; 
+    });
+}
